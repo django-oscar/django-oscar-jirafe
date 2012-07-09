@@ -1,0 +1,6 @@
+{% extends 'templates/base.html' %}
+
+{% block extrascripts %}
+	{{ block.super }}
+	{% include 'jirafe/tracking.html' %}
+{% endblock %}

@@ -1,0 +1,64 @@
+<script type="text/javascript">
+	var jirafe = { "id": {{ JIRAFE_ID }}};
+
+	{% if product %}
+		jirafe.product = {
+			"sku": "{{ product.stockrecord.partner_sku|escapejs }}",
+			"name": "{{ product.get_title|escapejs }}",
+			"price": "{{ product.stockrecord.price_incl_tax }}",
+			"categories": [{% for category in product.categories.all %}"{{ category.name|escapejs }}",{% endfor %}]
+		};
+	{% endif %}
+
+	{% if category %}
+		jirafe.category = {
+			"name": "{{ category.name|escapejs }}"
+		};
+	{% endif %}
+
+	{# Using voucher_form as a proxy for when we're on the basket page #}
+	{% if voucher_form %}
+		jirafe.cart = {
+			"total": "{{ basket.total_incl_tax }}",
+			"products": [
+				{% for line in basket.lines.all %}
+				{
+				"sku": "{{ line.product.stockrecord.partner_sku|escapejs }}",
+				"name": "{{ line.product.get_title|escapejs }}",
+				"qty": "{{ line.quantity }}",
+				"price": "{{ line.product.stockrecord.price_incl_tax }}",
+				"category": ""
+				},
+				{% endfor %}
+			]
+		};
+	{% endif %}
+
+	{% if order %}
+		jirafe.confirm = {
+			"orderid": "{{ order.number|escapejs }}",
+			"total": "{{ order.total_incl_tax }}",
+			"shipping": "{{ order.shipping_incl_tax }}",
+			"tax": "{{ order.total_tax }}",
+			"discount": "0.00",
+			"subtotal": "{{ order.basket_total_incl_tax }}",
+			"products": [
+			{% for line in order.lines.all %}
+				{
+				"sku": "{{ line.product.stockrecord.partner_sku|escapejs }}",
+				"name": "{{ line.product.get_title|escapejs }}",
+				"qty": "{{ line.quantity }}",
+				"price": "{{ line.product.stockrecord.price_incl_tax }}",
+				"category": ""
+				},
+			{% endfor %}
+			]
+		};
+	{% endif %}
+
+	(function(){
+		var d=document,g=d.createElement('script'),s=d.getElementsByTagName('script')[0];
+		g.type='text/javascript';g.defer=g.async=true;g.src=d.location.protocol+'//c.jirafe.com/jirafe.js';
+		s.parentNode.insertBefore(g, s);
+	})();
+</script>
