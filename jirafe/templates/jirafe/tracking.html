@@ -6,7 +6,7 @@
 			"sku": "{{ product.stockrecord.partner_sku|escapejs }}",
 			"name": "{{ product.get_title|escapejs }}",
 			"price": "{{ product.stockrecord.price_incl_tax }}",
-			"categories": [{% for category in product.categories.all %}"{{ category.name|escapejs }}",{% endfor %}]
+			"categories": [{% for category in product.categories.all %}"{{ category.name|escapejs }}"{% if not forloop.last %},{% endif %}{% endfor %}]
 		};
 	{% endif %}
 
@@ -28,7 +28,7 @@
 				"qty": "{{ line.quantity }}",
 				"price": "{{ line.product.stockrecord.price_incl_tax }}",
 				"category": ""
-				},
+				}{% if not forloop.last %},{% endif %}
 				{% endfor %}
 			]
 		};
@@ -50,7 +50,7 @@
 				"qty": "{{ line.quantity }}",
 				"price": "{{ line.product.stockrecord.price_incl_tax }}",
 				"category": ""
-				},
+				}{% if not forloop.last %},{% endif %}
 			{% endfor %}
 			]
 		};
